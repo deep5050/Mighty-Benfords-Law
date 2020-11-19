@@ -12,7 +12,7 @@ jupyter:
     name: python3
 ---
 
-## Kaggle dataset related code
+## In this notebook we take all the tweeter users who teewted with #joebiden during US 2020 election and plot their follwers count to see if it obeys the Benford's law or not
 
 ```python _uuid="8f2839f25d086af736a60e9eeb907d3b93b6e0e5" _cell_guid="b1076dfc-b9ad-4769-8c92-a6c4dae69d19"
 # This Python 3 environment comes with many helpful analytics libraries installed
@@ -34,73 +34,70 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 ```
 
-## Read the dataset
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import math
 
-```python _uuid="d629ff2d2480ee46fbb7e2d37f6b5fab8052498a" _cell_guid="79c7e3d0-c299-4dcb-8224-4455121ee9b0"
-pd.read_csv("/kaggle/input/us-election-2020-tweets/hashtag_joebiden.csv")
+
+def firstDigit(number):
+    if number == 0:
+        return 0
+    else:
+        digits = (int)(math.log10(number)) 
+        number = (int)(number / pow(10, digits)) 
+        return number
+    
+    
+def graph(data,col_name):
+    col = data
+    length = len(col)
+    
+    dict_freq = {}
+    for i in range(1,10):
+        dict_freq[str(i)] = 0
+    for i in col:
+        if (type(i) is int or type(i) is float) and i>0:
+            f_digit = firstDigit(i)
+            dict_freq[str(f_digit)]+=1
+
+    benford_dict = {}
+    for i in range(1,10):
+        benford_dict[str(i)] = math.log10(1+1/i)
+    freq_ben = np.array(list(benford_dict.values()))
+    total_entries = 0
+    for i in list(dict_freq.values()):
+        total_entries+=i
+        
+        
+    digits = list(dict_freq.keys())
+    frequency = list(dict_freq.values())
+    benford_freq = freq_ben * total_entries
+
+    fig = plt.figure(figsize = (10, 8))
+    plt.bar(range(len(dict_freq)),frequency,tick_label=digits,color = 'orange')
+    plt.plot(digits,frequency,label=f"Realtime-{col_name} Metric Analysis",color='black',linestyle='dashed',linewidth=3,marker='o')
+    plt.plot(digits,benford_freq,label="Actual Benford's Analysis",color='blue',linestyle='dashed',linewidth=3,marker='*')
+    plt.xlabel('Digits')
+    plt.ylabel('Frequency')
+    plt.legend()
+    plt.savefig(f'result_{col_name}.png', dpi=300, bbox_inches='tight')
+    plt.show()
+    print(dict_freq)
 ```
 
-## Extract the required field
-
 ```python
-followers_count = np.asarray(pd.read_csv("/kaggle/input/us-election-2020-tweets/hashtag_joebiden.csv")['user_followers_count'])
-print(len(followers_count))
-```
+hashtag_joebiden = np.asarray(pd.read_csv("/kaggle/input/us-election-2020-tweets/hashtag_joebiden.csv")['user_followers_count'])
+# the data contains mixed data type , converting to int
 
-## Extract the first digits and store
-
-```python
-benford_map = [0,0,0,0,0,0,0,0,0,0]
-excpt = 0
-for digits in followers_count:
+for i in range(0,len(hashtag_joebiden)):
     try:
-        
-        digits = float(digits)
-        digits = int(digits)
-        str_digits = str(digits)
-        msd = int(str_digits[0])
-        benford_map[msd] = benford_map[msd] + 1
-        
+        hashtag_joebiden[i] = int(float(hashtag_joebiden[i]))
     except:
-        excpt = excpt + 1
+        pass
     
-print('skipped:' ,excpt)
-print(benford_map)
-
+graph(hashtag_joebiden,'Followers')
 ```
 
-## Plot the graph
-
-```python
-import matplotlib.pyplot as plt  
-fig = plt.figure(figsize = (10, 5)) 
-x = [0,1,2,3,4,5,6,7,8,9]
-# creating the bar plot 
-plt.bar(x[1:], benford_map[1:], color ='blue',  
-        width = 0.4) 
-plt.xlabel("Most Significant Digits") 
-plt.ylabel("Count") 
-plt.title("Benford Graph") 
-plt.show() 
-```
-
-## calculate percentage
-
-```python
-ben_map = benford_map[1:]
-total = 0
-for entry in ben_map:
-    total = total + entry
-
-
-i = 1
-output = {}  
-for entry in ben_map:
-    output[str(i)] = str((entry/total)*100)
-    i = i+1
-    
-print(output)
-
-```
-
-# Satisfied
+## Conclusion: It almost perfectly obeys the law
