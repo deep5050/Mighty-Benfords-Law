@@ -1,7 +1,7 @@
 <div align=center>
   <img align=center src="./logo.svg" alt="logo">
   <br> </br>
-  <p align=center>Experiments With Benford's Law On Some Crazy Datasets</p>
+ <img align=center src="./intro.svg" alt="intro">
 </div>
 
 
