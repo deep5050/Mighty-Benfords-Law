@@ -1,8 +1,10 @@
-# Mighty-Benfords-Law
-Experiments With Benford's Law On Crazy Datasets (WIP)
+<div align=center>
+  <img align=center src="./logo.svg" alt="logo">
+  <br> </br>
+  <p align=center>Experiments With Benford's Law On Some Crazy Datasets</p>
+</div>
 
 
-# Work in progress
 
 ## INTRODUCTION
 
@@ -18,3 +20,4 @@ For example, if you collect a set of numbers, then, according to Benford's Law, 
 There were rumouirs that some Tax Agencies used Benford's Law to detect fraud activity in user accounts. They would take all the tax invoices and apply benford's law on the set of numbers(basically the tax payment done by individual users) and if the numbers doesnt add up to the benford distribution, then, that person would be in trouble. Obviously, neither the agencies aggreed to this usage of methodology nor did they decline. But this law became a state-of-the-art workflow to detect fraud in any domain that had numbers involved. 
 
 Numbers written on the front page of the newspaper(date, number of people killed, etc) were collected and evaluated into this algorithm and the results were shocking. The number set followed ***Benford's Law distribution***. When I came to know about it, I couldnt believe it. What I had were some facts written in words and my mind cannot accept anything unless there is an implementation proving the law, on realtime data. Therefore, I performed certain analysis based on different types of realtime data to see whether Benford's Law was true or was it just ancient.
+
